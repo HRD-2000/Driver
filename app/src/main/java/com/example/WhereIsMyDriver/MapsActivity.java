@@ -135,13 +135,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         marker.setPosition(latLng);
                     else
                         marker = mMap.addMarker(markerOptions);
-                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 14));
+                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
                 }
                 Toast.makeText(MapsActivity.this, "Latitude is: " + lat + ", Longitude is " + longitude, Toast.LENGTH_SHORT).show();
 
                 Helper helper = new Helper(intent.getDoubleExtra("latitude", 0f), intent.getDoubleExtra("longitude", 0f));
 
-                FirebaseDatabase.getInstance().getReference("Current Location Driver").setValue(helper).addOnCompleteListener(new OnCompleteListener<Void>() {
+                FirebaseDatabase.getInstance().getReference("Current Location").setValue(helper).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
 
