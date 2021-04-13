@@ -135,7 +135,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         marker.setPosition(latLng);
                     else
                         marker = mMap.addMarker(markerOptions);
-                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
+                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 18));
                 }
                 Toast.makeText(MapsActivity.this, "Latitude is: " + lat + ", Longitude is " + longitude, Toast.LENGTH_SHORT).show();
 
