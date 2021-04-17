@@ -11,7 +11,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
-
+import com.google.maps.android.SphericalUtil;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentActivity;
 
@@ -33,6 +33,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     SupportMapFragment mapFragment;
     Marker marker;
     LocationBroadcastReceiver receiver;
+
+    LatLng eva = new LatLng(22.2733889,73.1877028);
+    LatLng me;
+    Double distance;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,6 +104,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney)); */
 
 
+
         try {
             // Customise the styling of the base map using a JSON object defined
             // in a raw resource file.
@@ -129,6 +134,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 double longitude = intent.getDoubleExtra("longitude", 0f);
                 if (mMap != null) {
                     LatLng latLng = new LatLng(lat, longitude);
+                    //me = new LatLng(lat, longitude);
                     MarkerOptions markerOptions = new MarkerOptions();
                     markerOptions.position(latLng);
                     if (marker != null)
@@ -137,6 +143,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         marker = mMap.addMarker(markerOptions);
                     mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 18));
                 }
+                me = new LatLng(lat, longitude);
+                distance = SphericalUtil.computeDistanceBetween(eva, me);
+                Log.d("distance", "eva: "+eva+"\n me: "+me);
+                //Toast.makeText(this, "Distance between Sydney and Brisbane is \n " + String.format("%.2f", distance / 1000) + "km", Toast.LENGTH_SHORT).show();
+                Log.d("distance", "distance: "+distance+"\n"+"Distance between eva and your location is \n " + String.format("%.2f", distance / 1000) + "km");
+
                 Toast.makeText(MapsActivity.this, "Latitude is: " + lat + ", Longitude is " + longitude, Toast.LENGTH_SHORT).show();
 
                 Helper helper = new Helper(intent.getDoubleExtra("latitude", 0f), intent.getDoubleExtra("longitude", 0f));
