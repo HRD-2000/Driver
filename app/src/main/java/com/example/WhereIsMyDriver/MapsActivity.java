@@ -1,18 +1,27 @@
 package com.example.WhereIsMyDriver;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
+
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.maps.android.SphericalUtil;
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -33,6 +42,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     SupportMapFragment mapFragment;
     Marker marker;
     LocationBroadcastReceiver receiver;
+    private int Request_code = 1;
+    FusedLocationProviderClient fusedLocationProviderClient;
 
     LatLng eva = new LatLng(22.2733889,73.1877028);
     LatLng me;
@@ -49,19 +60,22 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         receiver = new LocationBroadcastReceiver();
 
-        if (Build.VERSION.SDK_INT >= 23) {
-            if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+        /*if (Build.VERSION.SDK_INT >= 23) {
+            if (ContextCompat.checkSelfPermission(this,Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, Request_code);
             } else {
                 //Req Location Permission
+
                 startLocService();
             }
         } else {
             //Start the Location Service
             startLocService();
-        }
+            mMap.setMyLocationEnabled(true);
+        }*/
         mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
     }
 
@@ -75,13 +89,24 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        switch (requestCode) {
+        /*switch (requestCode) {
             case 1:
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     //startLocService();
                 } else {
                     Toast.makeText(this, "Give me permissions", Toast.LENGTH_LONG).show();
                 }
+        }*/
+
+        if (requestCode == Request_code){
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                enableUserLocation();
+                startLocService();
+                zoomToUserLocation();
+
+            }else {
+                //dialog here...
+            }
         }
     }
 
@@ -97,6 +122,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+
+        if (ContextCompat.checkSelfPermission(this,Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager
+        .PERMISSION_GRANTED) {
+            enableUserLocation();
+            startLocService();
+            zoomToUserLocation();
+        }else {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,Manifest.permission.ACCESS_FINE_LOCATION)) {
+                //dialog here for permission
+                ActivityCompat.requestPermissions(this,new String[] {Manifest.permission.ACCESS_FINE_LOCATION},Request_code);
+            }else {
+                ActivityCompat.requestPermissions(this,new String[] {Manifest.permission.ACCESS_FINE_LOCATION},Request_code);
+            }
+        }
 
         /* Add a marker in Sydney and move the camera
         LatLng sydney = new LatLng(-34, 151);
@@ -118,6 +157,25 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         } catch (Resources.NotFoundException e) {
             Log.e("MapsActivity", "Can't find style. Error: ", e);
         }
+    }
+
+    @SuppressLint("MissingPermission")
+    private void enableUserLocation(){
+        mMap.setMyLocationEnabled(true);
+        mMap.getUiSettings().setMyLocationButtonEnabled(false);
+
+    }
+
+    @SuppressLint("MissingPermission")
+    private void zoomToUserLocation() {
+        Task<Location> locationTask = fusedLocationProviderClient.getLastLocation();
+        locationTask.addOnSuccessListener(new OnSuccessListener<Location>() {
+            @Override
+            public void onSuccess(Location location) {
+                LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,16));
+            }
+        });
     }
 
     @Override
@@ -143,11 +201,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         marker = mMap.addMarker(markerOptions);
                     mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 18));
                 }
-                me = new LatLng(lat, longitude);
-                distance = SphericalUtil.computeDistanceBetween(eva, me);
-                Log.d("distance", "eva: "+eva+"\n me: "+me);
+                //me = new LatLng(lat, longitude);
+                //distance = SphericalUtil.computeDistanceBetween(eva, me);
+               // Log.d("distance", "eva: "+eva+"\n me: "+me);
                 //Toast.makeText(this, "Distance between Sydney and Brisbane is \n " + String.format("%.2f", distance / 1000) + "km", Toast.LENGTH_SHORT).show();
-                Log.d("distance", "distance: "+distance+"\n"+"Distance between eva and your location is \n " + String.format("%.2f", distance / 1000) + "km");
+               // Log.d("distance", "distance: "+distance+"\n"+"Distance between eva and your location is \n " + String.format("%.2f", distance / 1000) + "km");
 
                 Toast.makeText(MapsActivity.this, "Latitude is: " + lat + ", Longitude is " + longitude, Toast.LENGTH_SHORT).show();
 
