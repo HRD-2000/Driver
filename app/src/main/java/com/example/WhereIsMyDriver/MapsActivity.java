@@ -42,7 +42,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     SupportMapFragment mapFragment;
     Marker marker;
     LocationBroadcastReceiver receiver;
-    private int Request_code = 1;
+    public static final int REQUEST_CHECK_SETTING = 1;
     FusedLocationProviderClient fusedLocationProviderClient;
 
     LatLng eva = new LatLng(22.2733889,73.1877028);
@@ -62,7 +62,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         /*if (Build.VERSION.SDK_INT >= 23) {
             if (ContextCompat.checkSelfPermission(this,Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, Request_code);
+                requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_CHECK_SETTING);
             } else {
                 //Req Location Permission
 
@@ -78,6 +78,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
     }
+
+
 
     void startLocService() {
         IntentFilter filter = new IntentFilter("ACT_LOC");
@@ -98,14 +100,36 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 }
         }*/
 
-        if (requestCode == Request_code){
+        if (requestCode == REQUEST_CHECK_SETTING){
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 enableUserLocation();
                 startLocService();
                 zoomToUserLocation();
+                Log.d("test", "onRequestPermissionsResult: if block for alert box");
 
             }else {
                 //dialog here...
+                Log.d("test", "onRequestPermissionsResult: else block for alert box");
+
+            }
+        }
+    }
+    private void getPermission() {
+
+        if (ContextCompat.checkSelfPermission(this,Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager
+                .PERMISSION_GRANTED) {
+            Log.d("test", "onMapReady: 1st if block");
+            enableUserLocation();
+            startLocService();
+            zoomToUserLocation();
+        }else {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,Manifest.permission.ACCESS_FINE_LOCATION)) {
+                //dialog here for permission
+                ActivityCompat.requestPermissions(this,new String[] {Manifest.permission.ACCESS_FINE_LOCATION},REQUEST_CHECK_SETTING);
+                Log.d("test", "onMapReady: if block in else part");
+            }else {
+                ActivityCompat.requestPermissions(this,new String[] {Manifest.permission.ACCESS_FINE_LOCATION},REQUEST_CHECK_SETTING);
+                Log.d("test", "onMapReady: else block in else part");
             }
         }
     }
@@ -123,19 +147,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        if (ContextCompat.checkSelfPermission(this,Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager
-        .PERMISSION_GRANTED) {
-            enableUserLocation();
-            startLocService();
-            zoomToUserLocation();
-        }else {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this,Manifest.permission.ACCESS_FINE_LOCATION)) {
-                //dialog here for permission
-                ActivityCompat.requestPermissions(this,new String[] {Manifest.permission.ACCESS_FINE_LOCATION},Request_code);
-            }else {
-                ActivityCompat.requestPermissions(this,new String[] {Manifest.permission.ACCESS_FINE_LOCATION},Request_code);
-            }
-        }
+        getPermission();
+
 
         /* Add a marker in Sydney and move the camera
         LatLng sydney = new LatLng(-34, 151);
@@ -181,6 +194,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     protected void onPause() {
         super.onPause();
+        Toast.makeText(this, "onPause invoked", Toast.LENGTH_SHORT).show();
         unregisterReceiver(receiver);
     }
 
@@ -198,7 +212,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     if (marker != null)
                         marker.setPosition(latLng);
                     else
-                        marker = mMap.addMarker(markerOptions);
+                        //marker = mMap.addMarker(markerOptions);
                     mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 18));
                 }
                 //me = new LatLng(lat, longitude);
