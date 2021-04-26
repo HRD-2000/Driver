@@ -204,6 +204,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             if (intent.getAction().equals("ACT_LOC")) {
                 double lat = intent.getDoubleExtra("latitude", 0f);
                 double longitude = intent.getDoubleExtra("longitude", 0f);
+                float bearing = intent.getFloatExtra("bearing",0);
+                float bearingAccuracy = intent.getFloatExtra("BearingAccuracy",0);
+                float Accuracy = intent.getFloatExtra("Accuracy",0);
                 if (mMap != null) {
                     LatLng latLng = new LatLng(lat, longitude);
                     //me = new LatLng(lat, longitude);
@@ -222,8 +225,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                // Log.d("distance", "distance: "+distance+"\n"+"Distance between eva and your location is \n " + String.format("%.2f", distance / 1000) + "km");
 
                 Toast.makeText(MapsActivity.this, "Latitude is: " + lat + ", Longitude is " + longitude, Toast.LENGTH_SHORT).show();
+                Log.d("test", "Latitude: "+lat+"\nLongitude: "+longitude+"\nBearing: "+bearing+"\nBearingAccuracy: "+bearingAccuracy+"\nAccuracy :"+Accuracy);
 
-                Helper helper = new Helper(intent.getDoubleExtra("latitude", 0f), intent.getDoubleExtra("longitude", 0f));
+                Helper helper = new Helper(longitude,lat,bearing,bearingAccuracy,Accuracy);
 
                 FirebaseDatabase.getInstance().getReference("Current Location").setValue(helper).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
@@ -241,6 +245,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         }
     }
+
+    
 }
 
 

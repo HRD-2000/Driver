@@ -4,6 +4,8 @@ import android.Manifest;
 import android.app.Service;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Location;
+import android.os.Build;
 import android.os.IBinder;
 import android.os.Looper;
 import android.util.Log;
@@ -15,6 +17,7 @@ import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.model.LatLng;
 
 
 public class LocationService extends Service {
@@ -44,9 +47,17 @@ public class LocationService extends Service {
                 super.onLocationResult(locationResult);
                 Log.d("mylog", "Lat is: " + locationResult.getLastLocation().getLatitude() + ", "
                         + "Lng is: " + locationResult.getLastLocation().getLongitude());
+
+                LatLng l = new LatLng(locationResult.getLastLocation().getLatitude(),locationResult.getLastLocation().getLongitude() );
+                Location loc = new Location(String.valueOf(l));
                 Intent intent = new Intent("ACT_LOC");
                 intent.putExtra("latitude", locationResult.getLastLocation().getLatitude());
                 intent.putExtra("longitude", locationResult.getLastLocation().getLongitude());
+                intent.putExtra("brearing",loc.getBearing());
+                intent.putExtra("Accuracy",loc.getAccuracy());
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    intent.putExtra("BearingAccuracy",loc.getBearingAccuracyDegrees());
+                }
                 sendBroadcast(intent);
             }
         };
@@ -74,6 +85,7 @@ public class LocationService extends Service {
         }
         fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper());
     }
+
 }
 
 
