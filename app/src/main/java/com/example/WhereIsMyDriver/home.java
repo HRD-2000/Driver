@@ -3,8 +3,6 @@ package com.example.WhereIsMyDriver;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
-import androidx.core.content.pm.PackageInfoCompat;
 
 import android.Manifest;
 import android.app.Activity;
@@ -15,7 +13,10 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.Spinner;
+import android.widget.SpinnerAdapter;
 import android.widget.Toast;
 
 import com.google.android.gms.common.api.ApiException;
@@ -28,7 +29,14 @@ import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
-public class Home extends AppCompatActivity {
+import de.hdodenhof.circleimageview.CircleImageView;
+
+public class home extends AppCompatActivity {
+
+    Button button1;
+    CircleImageView circleImageView;
+    AutoCompleteTextView autoCompleteTextView;
+    Spinner spinner;
 
     public static final int REQUEST_CHECK_SETTING = 101;
     public static final int REQUEST_CHECK_SETTING_1 = 102;
@@ -42,6 +50,32 @@ public class Home extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+
+        Route_user.setRoutes();
+
+        CircleImageView circleImageView = findViewById(R.id.circleImageView);
+        Spinner spinner = findViewById(R.id.spinner);
+        Button button1 = findViewById(R.id.button1);
+
+        circleImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(home.this,MapsActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        button1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(home.this,MapsActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        SpinnerAdapter spinnerAdapter = new Spinner_Adapter(this,R.layout.drop_down,Route_user.getRoutes());
+        spinner.setAdapter(spinnerAdapter);
+
 
 
         getPermission();
@@ -86,16 +120,16 @@ public class Home extends AppCompatActivity {
             public void onComplete(@NonNull Task<LocationSettingsResponse> task) {
                 try {
                     LocationSettingsResponse response =task.getResult(ApiException.class);
-                    Toast.makeText(Home.this, "GPS is On!!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(home.this, "GPS is On!!", Toast.LENGTH_SHORT).show();
                     Log.d("test", "onComplete: GPS is on");
-                    startActivity(new Intent(Home.this,MapsActivity.class));
+                    //startActivity(new Intent(home.this,MapsActivity.class));
                 } catch (ApiException e) {
                     switch (e.getStatusCode()){
 
                         case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
                             ResolvableApiException resolvableApiException = (ResolvableApiException) e;
                             try {
-                                resolvableApiException.startResolutionForResult(Home.this,REQUEST_CHECK_SETTING_1);
+                                resolvableApiException.startResolutionForResult(home.this,REQUEST_CHECK_SETTING_1);
                             } catch (IntentSender.SendIntentException sendIntentException) {
 
                             }
@@ -138,7 +172,7 @@ public class Home extends AppCompatActivity {
                     case Activity.RESULT_OK:
                         Toast.makeText(getApplicationContext(),"GPS is Turned ON",Toast.LENGTH_SHORT).show();
                         Log.d("test", "onActivityResult: GPS is Turned On");
-                        startActivity(new Intent(Home.this,MapsActivity.class));
+                        //startActivity(new Intent(home.this,MapsActivity.class));
                         break;
                     case Activity.RESULT_CANCELED:
                         Toast.makeText(this, "GPS is required to be turned on", Toast.LENGTH_SHORT).show();
