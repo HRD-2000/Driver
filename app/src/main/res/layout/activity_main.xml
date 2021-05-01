@@ -105,11 +105,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="15dp"
-        android:layout_marginTop="20dp"
         app:endIconMode="password_toggle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/filledTextField_username"
-        app:startIconDrawable="@drawable/ic_baseline_lock_24"
-        tools:layout_editor_absoluteX="15dp">
+        app:startIconDrawable="@drawable/ic_baseline_lock_24">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/edt_password"
@@ -117,31 +117,28 @@
             android:layout_height="wrap_content"
             android:hint="Password"
             android:inputType="textPassword"
-            tools:layout_editor_absoluteX="32dp"
-            tools:layout_editor_absoluteY="392dp" />
-
-
+            />
         <!--this is the actual edit text which takes the input-->
 
     </com.google.android.material.textfield.TextInputLayout>
 
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/button"
+        android:id="@+id/login_button"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
         android:layout_marginLeft="32dp"
-        android:layout_marginTop="48dp"
         android:layout_marginEnd="32dp"
         android:layout_marginRight="32dp"
+        android:layout_marginBottom="164dp"
         android:background="@drawable/round_bg"
         android:text="Button"
         android:textColorHighlight="#FFFFFF"
         android:textColorLink="#FFFFFF"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/filledTextField_pass" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/textView"
@@ -161,7 +158,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button" />
+        app:layout_constraintTop_toBottomOf="@+id/login_button" />
 
     <View
         android:id="@+id/view4"
@@ -180,12 +177,14 @@
         android:id="@+id/imageView4"
         android:layout_width="409dp"
         android:layout_height="282dp"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/driverbusimg" />
+
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
