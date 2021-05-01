@@ -138,7 +138,7 @@ public class MainActivity extends AppCompatActivity {
             {
                 Toast.makeText(MainActivity.this, " Login sucessful... ", Toast.LENGTH_SHORT).show();
                 loadingDialog.dismissDialog();
-                Intent intent = new Intent(MainActivity.this, MapsActivity.class);
+                Intent intent = new Intent(MainActivity.this, Home.class);
 
                 startActivity(intent);
 
