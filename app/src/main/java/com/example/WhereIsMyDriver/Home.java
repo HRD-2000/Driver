@@ -31,7 +31,7 @@ import com.google.android.gms.tasks.Task;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class home extends AppCompatActivity {
+public class Home extends AppCompatActivity {
 
     Button button1;
     CircleImageView circleImageView;
@@ -60,7 +60,7 @@ public class home extends AppCompatActivity {
         circleImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(home.this,MapsActivity.class);
+                Intent intent = new Intent(Home.this,MapsActivity.class);
                 startActivity(intent);
             }
         });
@@ -68,7 +68,7 @@ public class home extends AppCompatActivity {
         button1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(home.this,MapsActivity.class);
+                Intent intent = new Intent(Home.this,MapsActivity.class);
                 startActivity(intent);
             }
         });
@@ -120,7 +120,7 @@ public class home extends AppCompatActivity {
             public void onComplete(@NonNull Task<LocationSettingsResponse> task) {
                 try {
                     LocationSettingsResponse response =task.getResult(ApiException.class);
-                    Toast.makeText(home.this, "GPS is On!!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Home.this, "GPS is On!!", Toast.LENGTH_SHORT).show();
                     Log.d("test", "onComplete: GPS is on");
                     //startActivity(new Intent(home.this,MapsActivity.class));
                 } catch (ApiException e) {
@@ -129,7 +129,7 @@ public class home extends AppCompatActivity {
                         case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
                             ResolvableApiException resolvableApiException = (ResolvableApiException) e;
                             try {
-                                resolvableApiException.startResolutionForResult(home.this,REQUEST_CHECK_SETTING_1);
+                                resolvableApiException.startResolutionForResult(Home.this,REQUEST_CHECK_SETTING_1);
                             } catch (IntentSender.SendIntentException sendIntentException) {
 
                             }
