@@ -65,15 +65,14 @@ public class MainActivity extends AppCompatActivity {
         login_button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view)
             {
-                startActivity(new Intent(MainActivity.this, Home.class));
+               // startActivity(new Intent(MainActivity.this, Home.class));
 
                 if (edt_username.getText().toString().length()==0 ) {
                     edt_username.setError("Username can't be empty");
                 }else if(edt_password.getText().toString().isEmpty()){
                     edt_password.setError("Password can't be empty");
                 }else{
-                    loadingDialog.startLoadingDialog();
-                    login_url = header+"/user_login.php?username="+edt_username.getText().toString();
+                    login_url = header+"driver_login.php?driver_username="+edt_username.getText().toString();
                     new retrieve().execute();
 
                     Log.v("Login",""+login_url);
@@ -92,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
         protected void onPreExecute() {
             super.onPreExecute();
 
-          //  loadingDialog.startLoadingDialog();
+            loadingDialog.startLoadingDialog();
         }
 
         @Override
@@ -107,19 +106,19 @@ public class MainActivity extends AppCompatActivity {
                 JSONObject jsonObject = new JSONObject(result);
                 JSONArray jsonArray = jsonObject.getJSONArray("res");
 
-                Log.v("Login_DATA",""+result);
-
                 for (int i = 0; i < jsonArray.length(); i++) {
 
                     JSONObject jsonObject11 = jsonArray.getJSONObject(i);
                     Login_pojo p = new Login_pojo();
 
-                    p.setUsername(jsonObject11.getString("username"));
-                    p.setPassword(jsonObject11.getString("password"));
+                    p.setUsername(jsonObject11.getString("driver_username"));
+                    p.setPassword(jsonObject11.getString("driver_password"));
                     model.add(p);
 
                     username = p.getUsername();
                     password = p.getPassword();
+
+                    Log.v("Login_DATA",""+username+" "+password);
 
                 }
             }
