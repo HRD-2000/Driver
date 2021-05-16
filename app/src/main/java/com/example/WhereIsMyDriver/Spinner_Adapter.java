@@ -1,6 +1,7 @@
 package com.example.WhereIsMyDriver;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,8 @@ import com.squareup.picasso.Picasso;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+
+import static android.content.Context.MODE_PRIVATE;
 
 public class Spinner_Adapter extends ArrayAdapter<dropdown_pojo>
 {
@@ -38,7 +41,12 @@ public class Spinner_Adapter extends ArrayAdapter<dropdown_pojo>
         TextView textView3 = rowView.findViewById(R.id.textView3);
         textView3.setText(dropdown_pojo.getDriver_id());
         Picasso.get().load(dropdown_pojo.getDriver_profile_pic()).into(circleImageView);
-        Toast.makeText(context,"test : "+textView3.getText().toString(),Toast.LENGTH_SHORT).show();
+        //Toast.makeText(context,"test : "+textView3.getText().toString(),Toast.LENGTH_SHORT).show();
+        //SharedPreferences sharedPref = context.getSharedPreferences("myLocation", MODE_PRIVATE);
+        //SharedPreferences.Editor editor = sharedPref.edit();
+        //editor.putString("s_loc",dropdown_pojo.getDriver_start_loc());
+        //editor.putString("e_loc",dropdown_pojo.getDriver_end_loc());
+        //editor.apply();
         return rowView;
     }
 

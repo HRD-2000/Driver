@@ -8,6 +8,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.IntentSender;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -20,6 +21,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.api.ApiException;
@@ -50,6 +52,8 @@ public class Home extends AppCompatActivity {
     AutoCompleteTextView autoCompleteTextView;
     Spinner spinner;
     LoadingWithAnim loadingDialog;
+    TextView startLoc,endLoc;
+
 
     public static final int REQUEST_CHECK_SETTING = 101;
     public static final int REQUEST_CHECK_SETTING_1 = 102;
@@ -64,22 +68,33 @@ public class Home extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        Route_user.setRoutes();
+        getPermission();
+        //Route_user.setRoutes();
 
         circleImageView = findViewById(R.id.circleImageView);
         spinner = findViewById(R.id.spinner);
         button1 = findViewById(R.id.button1);
         header = getString(R.string.header);
+        startLoc = findViewById(R.id.textView4);
+        endLoc = findViewById(R.id.textView5);
 
         drop_down_url = header + "route_dropdown.php";
         loadingDialog = new LoadingWithAnim(Home.this);
-        circleImageView.setOnClickListener(new View.OnClickListener() {
+
+        new retrieve().execute();
+
+
+
+
+
+
+        /*circleImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(Home.this,MapsActivity.class);
                 startActivity(intent);
             }
-        });
+        });*/
 
         button1.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -89,23 +104,30 @@ public class Home extends AppCompatActivity {
             }
         });
 
-        new retrieve().execute();
 
-        /*spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+
+
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(Home.this,""+position,Toast.LENGTH_SHORT).show();
+                //Toast.makeText(Home.this,""+model.get(position).getDriver_start_loc(),Toast.LENGTH_SHORT).show();
+                String start_loc = model.get(position).getDriver_start_loc();
+                String end_loc = model.get(position).getDriver_end_loc();
+
+                startLoc.setText(start_loc);
+                endLoc.setText(end_loc);
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
 
             }
-        });*/
+        });
 
 
 
-        getPermission();
+
 
     }
 
@@ -255,6 +277,13 @@ public class Home extends AppCompatActivity {
             loadingDialog.dismissDialog();
             Spinner_Adapter spinnerAdapter = new Spinner_Adapter(Home.this,R.layout.drop_down,model);
             spinner.setAdapter(spinnerAdapter);
+
+            //SharedPreferences sharedPreferences = getSharedPreferences("myKey", MODE_PRIVATE);
+            //String start_loc = sharedPreferences.getString("s_loc","");
+            //String end_loc = sharedPreferences.getString("e_loc","");
+
+            //startLoc.setText(start_loc);
+            //endLoc.setText(end_loc);
         }
     }
 
