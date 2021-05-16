@@ -9,8 +9,10 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
@@ -29,14 +31,24 @@ import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class Home extends AppCompatActivity {
 
+    String result,drop_down_url,header;
+    List <dropdown_pojo> model;
     Button button1;
     CircleImageView circleImageView;
     AutoCompleteTextView autoCompleteTextView;
     Spinner spinner;
+    LoadingWithAnim loadingDialog;
 
     public static final int REQUEST_CHECK_SETTING = 101;
     public static final int REQUEST_CHECK_SETTING_1 = 102;
@@ -53,9 +65,12 @@ public class Home extends AppCompatActivity {
 
         Route_user.setRoutes();
 
-        CircleImageView circleImageView = findViewById(R.id.circleImageView);
-        Spinner spinner = findViewById(R.id.spinner);
-        Button button1 = findViewById(R.id.button1);
+        circleImageView = findViewById(R.id.circleImageView);
+        spinner = findViewById(R.id.spinner);
+        button1 = findViewById(R.id.button1);
+        header = getString(R.string.header);
+
+        drop_down_url = header + "route_dropdown.php";
 
         circleImageView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -73,8 +88,8 @@ public class Home extends AppCompatActivity {
             }
         });
 
-        SpinnerAdapter spinnerAdapter = new Spinner_Adapter(this,R.layout.drop_down,Route_user.getRoutes());
-        spinner.setAdapter(spinnerAdapter);
+        new retrieve().execute();
+
 
 
 
@@ -181,4 +196,54 @@ public class Home extends AppCompatActivity {
 
             }
     }
+
+    public class retrieve extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+            loadingDialog.startLoadingDialog();
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+
+            try
+            {
+                JsonParser o = new JsonParser();
+                result = o.insert(drop_down_url);
+                model = new ArrayList<>();
+
+                JSONObject jsonObject = new JSONObject(result);
+                JSONArray jsonArray = jsonObject.getJSONArray("res");
+
+                for (int i = 0; i < jsonArray.length(); i++) {
+
+                    JSONObject jsonObject11 = jsonArray.getJSONObject(i);
+                    dropdown_pojo p = new dropdown_pojo();
+                    p.setDriver_id(jsonObject11.getString("driver_id"));
+                    p.setDriver_profile_pic(jsonObject11.getString("driver_profile_pic"));
+                    p.setDriver_end_loc(jsonObject11.getString("driver_end_loc"));
+                    p.setDriver_start_loc(jsonObject11.getString("driver_start_loc"));
+                    model.add(p);
+                }
+            }
+            catch ( JSONException e)
+            {
+                e.printStackTrace();
+                //  Toast.makeText(Login.this, "Please check your Internet Connection and Retry", Toast.LENGTH_LONG).show();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            loadingDialog.dismissDialog();
+            Spinner_Adapter spinnerAdapter = new Spinner_Adapter(Home.this,R.layout.drop_down,model);
+            spinner.setAdapter(spinnerAdapter);
+        }
+    }
+
 }

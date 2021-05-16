@@ -10,30 +10,31 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.squareup.picasso.Picasso;
+
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class Spinner_Adapter extends ArrayAdapter<Route_user>
+public class Spinner_Adapter extends ArrayAdapter<dropdown_pojo>
 {
     LayoutInflater layoutInflater;
 
-    public Spinner_Adapter(@NonNull Context context, int resource, @NonNull List<Route_user> route_users)
+    public Spinner_Adapter(@NonNull Context context, int resource, @NonNull List<dropdown_pojo> dropdown_pojos)
     {
-        super(context, resource, route_users);
+        super(context, resource, dropdown_pojos);
         layoutInflater = LayoutInflater.from(context);
-
     }
 
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         View rowView = layoutInflater.inflate(R.layout.drop_down,null,true);
-        Route_user route_user = getItem(position);
+        dropdown_pojo dropdown_pojo = getItem(position);
         CircleImageView circleImageView = rowView.findViewById(R.id.circleImageView);
         TextView textView3 = rowView.findViewById(R.id.textView3);
-        textView3.setText(route_user.getName());
-        circleImageView.setImageResource(route_user.getImage());
+        textView3.setText(dropdown_pojo.getDriver_id());
+        Picasso.get().load(dropdown_pojo.getDriver_profile_pic()).into(circleImageView);
         return rowView;
     }
 
@@ -42,11 +43,11 @@ public class Spinner_Adapter extends ArrayAdapter<Route_user>
         if (convertView == null)
             convertView= layoutInflater.inflate(R.layout.drop_down,null,false);
 
-        Route_user route_user = getItem(position);
+        dropdown_pojo dropdown_pojo = getItem(position);
         CircleImageView circleImageView = convertView.findViewById(R.id.circleImageView);
         TextView textView3 = convertView.findViewById(R.id.textView3);
-        textView3.setText(route_user.getName());
-        circleImageView.setImageResource(route_user.getImage());
+        textView3.setText(dropdown_pojo.getDriver_id());
+        Picasso.get().load(dropdown_pojo.getDriver_profile_pic()).into(circleImageView);
         return convertView;
     }
 }
