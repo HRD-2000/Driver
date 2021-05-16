@@ -71,7 +71,7 @@ public class Home extends AppCompatActivity {
         header = getString(R.string.header);
 
         drop_down_url = header + "route_dropdown.php";
-
+        loadingDialog = new LoadingWithAnim(Home.this);
         circleImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
