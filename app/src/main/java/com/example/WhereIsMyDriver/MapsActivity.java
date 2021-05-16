@@ -39,6 +39,7 @@ import com.google.firebase.database.FirebaseDatabase;
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     GoogleMap mMap;
+    String route_id;
     SupportMapFragment mapFragment;
     Marker marker;
     LocationBroadcastReceiver receiver;
@@ -77,6 +78,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mapFragment.getMapAsync(this);
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
+        Intent i= getIntent();
+        route_id = i.getStringExtra("route_id");
     }
 
 
@@ -229,7 +232,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                 Helper helper = new Helper(longitude,lat,bearing,bearingAccuracy,Accuracy);
 
-                FirebaseDatabase.getInstance().getReference("Current Location").setValue(helper).addOnCompleteListener(new OnCompleteListener<Void>() {
+                FirebaseDatabase.getInstance().getReference(route_id).setValue(helper).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
 

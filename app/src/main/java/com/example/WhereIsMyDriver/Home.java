@@ -45,7 +45,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class Home extends AppCompatActivity {
 
-    String result,drop_down_url,header;
+    String result,drop_down_url,header,route_id;
     List <dropdown_pojo> model;
     Button button1;
     CircleImageView circleImageView;
@@ -100,6 +100,7 @@ public class Home extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(Home.this,MapsActivity.class);
+                intent.putExtra("route_id",route_id);
                 startActivity(intent);
             }
         });
@@ -117,6 +118,7 @@ public class Home extends AppCompatActivity {
 
                 startLoc.setText(start_loc);
                 endLoc.setText(end_loc);
+                route_id = model.get(position).getDriver_id();
             }
 
             @Override
