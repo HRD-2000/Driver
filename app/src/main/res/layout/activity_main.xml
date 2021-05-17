@@ -74,7 +74,8 @@
           app:layout_constraintStart_toStartOf="@+id/password"
           app:layout_constraintTop_toTopOf="@+id/password"
           app:srcCompat="@drawable/ic_baseline_lock_24"
-          tools:ignore="VectorDrawableCompat" /> -->
+          tools:ignore="VectorDrawableCompat"
+          fjdsl/> -->
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/filledTextField_username"
