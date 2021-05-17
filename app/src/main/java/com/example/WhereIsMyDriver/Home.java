@@ -73,8 +73,6 @@ public class Home extends AppCompatActivity {
     LocationRequest locationRequest;
 
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

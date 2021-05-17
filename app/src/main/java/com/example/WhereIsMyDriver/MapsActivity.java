@@ -95,8 +95,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
 
-
-
     void startLocService() {
         IntentFilter filter = new IntentFilter("ACT_LOC");
         registerReceiver(receiver, filter);
@@ -164,7 +162,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap = googleMap;
 
         getPermission();
-
 
         /* Add a marker in Sydney and move the camera
         LatLng sydney = new LatLng(-34, 151);

@@ -12,21 +12,22 @@
     sothree:umanoShadowHeight="4dp"
     tools:context=".MapsActivity">
 
-        <fragment
-            android:id="@+id/map"
-            android:name="com.google.android.gms.maps.SupportMapFragment"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:context=".MapsActivity"
-            tools:layout="@layout/activity_maps">
+   <!-- <fragment
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".MapsActivity"
+        tools:layout="@layout/activity_maps">
 
-        </fragment>
+    </fragment> -->
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:background="@drawable/slider_background">
 
+        <!--
 
         <TextView
             android:id="@+id/textView7"
@@ -126,22 +127,6 @@
             sothree:layout_constraintTop_toTopOf="@+id/distance_tv"
             android:layout_marginRight="40dp" />
 
-
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/appCompatButton1"
-            android:layout_width="178dp"
-            android:layout_height="79dp"
-            android:layout_marginTop="92dp"
-            android:background="@drawable/slide_btn_bg"
-            android:text="Stop location sharing"
-            android:textAllCaps="false"
-            android:textColor="@color/black"
-            android:textSize="16dp"
-            sothree:layout_constraintEnd_toEndOf="parent"
-            sothree:layout_constraintHorizontal_bias="0.497"
-            sothree:layout_constraintStart_toStartOf="parent"
-            sothree:layout_constraintTop_toBottomOf="@+id/recyclerView_routes" />
-
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView_routes"
             android:layout_width="0dp"
@@ -149,13 +134,31 @@
             android:layout_marginTop="68dp"
             sothree:layout_constraintEnd_toEndOf="parent"
             sothree:layout_constraintStart_toStartOf="parent"
-            sothree:layout_constraintTop_toBottomOf="@+id/appCompatButton" />
+            sothree:layout_constraintTop_toBottomOf="@+id/appCompatButton" /> -->
+
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/appCompatButton1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/slide_btn_bg"
+            android:paddingHorizontal="20dp"
+            android:text="Stop location sharing"
+            android:textAllCaps="false"
+            android:layout_marginVertical="30dp"
+            android:textColor="@color/black"
+            android:textSize="16dp"
+            sothree:layout_constraintBottom_toBottomOf="parent"
+            sothree:layout_constraintEnd_toEndOf="parent"
+            sothree:layout_constraintHorizontal_bias="0.497"
+            sothree:layout_constraintStart_toStartOf="parent"
+            sothree:layout_constraintTop_toTopOf="parent" />
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-
-
-  <!--  <TextView
+  <!--  -->
+  <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center"
@@ -167,7 +170,6 @@
         sothree:layout_constraintStart_toStartOf="parent"
         sothree:layout_constraintTop_toTopOf="parent">
 
-    </TextView> -->
-
+    </TextView>
 
 </com.sothree.slidinguppanel.SlidingUpPanelLayout>
