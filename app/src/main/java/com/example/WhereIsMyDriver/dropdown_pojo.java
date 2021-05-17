@@ -4,7 +4,7 @@ public class dropdown_pojo {
     public String driver_id,driver_profile_pic,driver_start_loc,driver_end_loc;
 
     public String getDriver_id() {
-        return "Route "+ driver_id;
+        return  driver_id;
     }
 
     public void setDriver_id(String driver_id) {

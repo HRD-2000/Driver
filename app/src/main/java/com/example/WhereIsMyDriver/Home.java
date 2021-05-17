@@ -6,6 +6,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.SharedPreferences;
@@ -15,10 +18,13 @@ import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 import android.widget.TextView;
@@ -53,7 +59,13 @@ public class Home extends AppCompatActivity {
     Spinner spinner;
     LoadingWithAnim loadingDialog;
     TextView startLoc,endLoc;
-
+    SharedPreferences sp;
+    EditText pinEditText;
+    String resultPin,pin_url;
+    List<pin_pojo> pinPojoList;
+    Integer pin_code;
+    ViewGroup parent;
+    View pinLayout;
 
     public static final int REQUEST_CHECK_SETTING = 101;
     public static final int REQUEST_CHECK_SETTING_1 = 102;
@@ -83,7 +95,10 @@ public class Home extends AppCompatActivity {
 
         new retrieve().execute();
 
-
+        sp = PreferenceManager.getDefaultSharedPreferences(Home.this);
+        String s = sp.getString("email_id","");
+        pin_url = header + "pin_retrieve.php?driver_username="+s;
+        Log.d("test", ""+pin_url);
 
 
 
@@ -95,13 +110,84 @@ public class Home extends AppCompatActivity {
                 startActivity(intent);
             }
         });*/
+        pinLayout = getLayoutInflater().inflate(R.layout.pin_dialog,null);
+        pinEditText = pinLayout.findViewById(R.id.pin_edit_text);
+        parent = (ViewGroup) pinLayout.getParent();
 
         button1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(Home.this,MapsActivity.class);
-                intent.putExtra("route_id",route_id);
-                startActivity(intent);
+
+                if (pinLayout != null) {
+                    ViewGroup parentView = (ViewGroup) pinLayout.getParent();
+                    if (parentView != null) {
+                        parentView.removeView(pinLayout);
+                    }
+                }
+
+
+                // Create an alert builder
+                AlertDialog.Builder adb = new AlertDialog.Builder(Home.this);
+                adb.setTitle("Enter Your PIN");
+
+                // set the custom layout
+
+                adb.setView(pinLayout);
+                adb.setPositiveButton("Verify", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        if (pinEditText.getText().toString().isEmpty())
+                        {
+                            /*if (pinLayout != null) {
+                                ViewGroup parentView = (ViewGroup) pinLayout.getParent();
+                                if (parentView != null) {
+                                    parentView.removeView(pinLayout);
+                                }
+                            }*/
+                            pinEditText.setError("Pin can't be empty");
+                            pinEditText.requestFocus();
+
+                            //Toast.makeText(Home.this, "Pin can't be empty", Toast.LENGTH_SHORT).show();
+                        }
+                        else {
+
+                            new retrievePin().execute();
+                        }
+
+
+                        //sp = PreferenceManager.getDefaultSharedPreferences(Home.this);
+
+
+
+                    }
+                });
+                adb.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        if (pinLayout != null) {
+                            ViewGroup parentView = (ViewGroup) pinLayout.getParent();
+                            if (parentView != null) {
+                                parentView.removeView(pinLayout);
+                            }
+                        }
+
+                    }
+                });
+
+
+
+                // create and show
+                // the alert dialog
+                AlertDialog dialog = adb.create();
+                if (dialog.isShowing()){
+                    dialog.cancel();
+                    dialog.show();
+                }else {
+                    dialog.show();
+                }
+
             }
         });
 
@@ -287,6 +373,80 @@ public class Home extends AppCompatActivity {
             //startLoc.setText(start_loc);
             //endLoc.setText(end_loc);
         }
+    }
+
+    public class retrievePin extends AsyncTask<Void,Void,Void>{
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            loadingDialog.startLoadingDialog();
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+
+
+            try
+            {
+                JsonParser o = new JsonParser();
+                resultPin = o.insert(pin_url);
+                pinPojoList = new ArrayList<>();
+
+                JSONObject jsonObject = new JSONObject(resultPin);
+                JSONArray jsonArray = jsonObject.getJSONArray("res");
+
+                for (int i = 0; i < jsonArray.length(); i++) {
+
+                    JSONObject jsonObject11 = jsonArray.getJSONObject(i);
+                    pin_pojo p = new pin_pojo();
+
+                    p.setDriver_username(jsonObject11.getString("driver_username"));
+                    p.setDriver_pin(jsonObject11.getInt("driver_pin"));
+                    pinPojoList.add(p);
+
+                    pin_code = p.getDriver_pin();
+                    Log.d("test", "username: "+p.getDriver_username()+"\npin :"+p.getDriver_pin());
+                }
+            }
+            catch ( JSONException e)
+            {
+                e.printStackTrace();
+                loadingDialog.dismissDialog();
+                //Toast.makeText(Home.this, "Something went wrong please try again!", Toast.LENGTH_LONG).show();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            loadingDialog.dismissDialog();
+            if (pinEditText.getText().toString().equals(String.valueOf(pin_code)))
+            {
+                Toast.makeText(getApplicationContext(),"Access granted",Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(Home.this,MapsActivity.class);
+                intent.putExtra("route_id",route_id);
+                startActivity(intent);
+
+                if (pinLayout != null) {
+                    ViewGroup parentView = (ViewGroup) pinLayout.getParent();
+                    if (parentView != null) {
+                        parentView.removeView(pinLayout);
+                    }
+                }
+
+                pinEditText.getText().clear();
+
+            }
+            else{
+                Toast.makeText(getApplicationContext(),"Pin is not matched",Toast.LENGTH_SHORT).show();
+            }
+
+
+        }
+
+
     }
 
 }

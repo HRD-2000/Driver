@@ -39,7 +39,7 @@ public class Spinner_Adapter extends ArrayAdapter<dropdown_pojo>
         dropdown_pojo dropdown_pojo = getItem(position);
         CircleImageView circleImageView = rowView.findViewById(R.id.circleImageView);
         TextView textView3 = rowView.findViewById(R.id.textView3);
-        textView3.setText(dropdown_pojo.getDriver_id());
+        textView3.setText("Route "+dropdown_pojo.getDriver_id());
         Picasso.get().load(dropdown_pojo.getDriver_profile_pic()).into(circleImageView);
         //Toast.makeText(context,"test : "+textView3.getText().toString(),Toast.LENGTH_SHORT).show();
         //SharedPreferences sharedPref = context.getSharedPreferences("myLocation", MODE_PRIVATE);
@@ -58,7 +58,7 @@ public class Spinner_Adapter extends ArrayAdapter<dropdown_pojo>
         dropdown_pojo dropdown_pojo = getItem(position);
         CircleImageView circleImageView = convertView.findViewById(R.id.circleImageView);
         TextView textView3 = convertView.findViewById(R.id.textView3);
-        textView3.setText(dropdown_pojo.getDriver_id());
+        textView3.setText("Route "+dropdown_pojo.getDriver_id());
         Picasso.get().load(dropdown_pojo.getDriver_profile_pic()).into(circleImageView);
         return convertView;
     }

@@ -80,6 +80,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         Intent i= getIntent();
         route_id = i.getStringExtra("route_id");
+
     }
 
 
@@ -232,7 +233,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                 Helper helper = new Helper(longitude,lat,bearing,bearingAccuracy,Accuracy);
 
-                FirebaseDatabase.getInstance().getReference(route_id).setValue(helper).addOnCompleteListener(new OnCompleteListener<Void>() {
+                FirebaseDatabase.getInstance().getReference("Route "+route_id).setValue(helper).addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
 
